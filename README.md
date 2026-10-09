@@ -50,7 +50,7 @@ This is an educational and portfolio project. It is not connected to a real taxi
 | Hosting            | ChatGPT Sites / Cloudflare Workers         | Current live deployment                           |
 | Tests              | Node.js test assertions, SQLite            | API authorization and ride workflow checks        |
 
-**Hosting status:** the Sites deployment is live and private. Vercel and Render deployments are pending. The current Worker/D1 build cannot be deployed unchanged to a standard Node.js host: authentication and database adapters need migration first. Neither Clerk, Stripe, Google Maps, nor PostgreSQL is currently integrated.
+**Hosting status:** the Sites deployment is live and private. Vercel and Render deployments are pending. A separate [portable deployment adapter](deploy/README.md) now provides standard Next.js, Better Auth and PostgreSQL. Its hosted build and database tests are pending. The root Worker/D1 build still targets Sites. Clerk, Stripe and Google Maps are not integrated.
 
 ## Getting started
 
@@ -125,6 +125,7 @@ docs/                  Architecture, API and deployment documentation
 scripts/               Framework/build environment helpers
 build/                 Sites Worker and Vite integration
 public/                Static assets
+deploy/                Portable Next.js / PostgreSQL hosting adapter
 .github/               CI and contribution templates
 ```
 
@@ -143,13 +144,15 @@ Browser-level visual and cross-account hosted verification have not been complet
 - Stripe checkout, payment webhooks, refunds, and card storage are absent.
 - Updates use polling rather than WebSockets or push notifications.
 - Driver mode is self-selected; commercial driver onboarding is absent.
-- Active-ride checks are not fully transactional across simultaneous requests. Production dispatch needs stronger database constraints.
+- The root D1 implementation uses application checks for active rides. The portable adapter adds PostgreSQL partial unique indexes; its hosted workflow still needs verification.
 - Receipts are text files; PDF generation is not implemented.
 
 ## Roadmap
 
-- [ ] Portable Next.js deployment for Vercel and Render
-- [ ] PostgreSQL and managed authentication integration
+- [x] Prepare portable Next.js source for Vercel and Render
+- [ ] Publish and verify portable deployments
+- [x] Prepare PostgreSQL and Better Auth adapters
+- [ ] Verify PostgreSQL migrations and hosted authentication
 - [ ] Real geocoding, directions, distance and ETA calculation
 - [ ] Verified driver and vehicle onboarding
 - [ ] Transactional dispatch and nearest-driver matching
